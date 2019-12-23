@@ -94,7 +94,7 @@ end
 ### tvOS installation
   <details>
   <summary>tvOS details</summary>
-  
+
 `react-native link react-native-video` doesn’t work properly with the tvOS target so we need to add the library manually.
 
 First select your project in Xcode.
@@ -292,8 +292,10 @@ var styles = StyleSheet.create({
 ### Configurable props
 * [allowsExternalPlayback](#allowsexternalplayback)
 * [audioOnly](#audioonly)
+* [automaticallyWaitsToMinimizeStalling](#automaticallyWaitsToMinimizeStalling)
 * [bufferConfig](#bufferconfig)
 * [controls](#controls)
+* [disableFocus](#disableFocus)
 * [filter](#filter)
 * [filterEnabled](#filterEnabled)
 * [fullscreen](#fullscreen)
@@ -370,6 +372,13 @@ For this to work, the poster prop must be set.
 
 Platforms: all
 
+#### automaticallyWaitsToMinimizeStalling
+A Boolean value that indicates whether the player should automatically delay playback in order to minimize stalling. For clients linked against iOS 10.0 and later
+* **false** - Immediately starts playback
+* **true (default)** - Delays playback in order to minimize stalling
+
+Platforms: iOS
+
 #### bufferConfig
 Adjust the buffer settings. This prop takes an object with one or more of the properties listed below.
 
@@ -402,6 +411,8 @@ Determines whether to show player controls.
 Note on iOS, controls are always shown when in fullscreen mode.
 
 For Android MediaPlayer, you will need to build your own controls or use a package like [react-native-video-controls](https://github.com/itsnubix/react-native-video-controls) or [react-native-video-player](https://github.com/cornedor/react-native-video-player).
+
+Note on Android ExoPlayer, native controls are available by default. If needed, you can also add your controls or use a package like [react-native-video-controls].
 
 Platforms: Android ExoPlayer, iOS, react-native-dom
 
@@ -453,7 +464,7 @@ Controls whether the player enters fullscreen on play.
 * **false (default)** - Don't display the video in fullscreen
 * **true** - Display the video in fullscreen
 
-Platforms: iOS
+Platforms: iOS, Android Exoplayer
 
 #### fullscreenAutorotate
 If a preferred [fullscreenOrientation](#fullscreenorientation) is set, causes the video to rotate to that orientation but permits rotation of the screen to orientation held by user. Defaults to TRUE.
@@ -465,6 +476,8 @@ Platforms: iOS
 * **all (default)** - 
 * **landscape**
 * **portrait**
+
+Note on Android ExoPlayer, the full-screen mode by default goes into landscape mode. Exiting from the full-screen mode will display the video in Initial orientation.
 
 Platforms: iOS
 
@@ -619,8 +632,8 @@ Platforms: all
 #### reportBandwidth
 Determine whether to generate onBandwidthUpdate events. This is needed due to the high frequency of these events on ExoPlayer.
 
-* **false (default)** - Generate onBandwidthUpdate events
-* **true** - Don't generate onBandwidthUpdate events
+* **false (default)** - Don't generate onBandwidthUpdate events
+* **true** - Generate onBandwidthUpdate events
 
 Platforms: Android ExoPlayer
 
@@ -1159,7 +1172,7 @@ Save video to your Photos with current filter prop. Returns promise.
 
 Example:
 ```
-let response = await this.save();
+let response = await this.player.save();
 let path = response.uri;
 ```
 
@@ -1171,12 +1184,12 @@ Notes:
  - Works with cached videos as well. (Checkout video-caching example)
  - If the video is has not began buffering (e.g. there is no internet connection) then the save function will throw an error.
  - If the video is buffering then the save function promise will return after the video has finished buffering and processing.
- 
+
 Future: 
  - Will support multiple qualities through options
  - Will support more formats in the future through options
  - Will support custom directory and file name through options
- 
+
 Platforms: iOS
 
 #### restoreUserInterfaceForPictureInPictureStopCompleted
